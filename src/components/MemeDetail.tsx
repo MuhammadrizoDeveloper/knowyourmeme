@@ -4,24 +4,31 @@ import { useState, useEffect } from "react";
 import { SearchResult } from "../types";
 import { escapeHtmlAttr } from "../utils/helpers";
 import { MemeDetailMetadata } from "./MemeDetailMetadata";
-import { ActionCopyTemplateImage, ActionCopyThumbnail, ActionCopyUrl, ActionDownloadTemplateImage, ActionDownloadThumbnail, ActionOpenExtensionPreferences, ActionOpenInBrowser } from "./Actions";
+import {
+  ActionCopyTemplateImage,
+  ActionCopyThumbnail,
+  ActionCopyUrl,
+  ActionDownloadTemplateImage,
+  ActionDownloadThumbnail,
+  ActionOpenExtensionPreferences,
+  ActionOpenInBrowser,
+} from "./Actions";
 
 export function MemeDetail({ searchResult }: { searchResult: SearchResult }) {
   const memeUrl = searchResult.url;
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<MemeDetails | null>(null);
 
-  const templateImageUrl = data?.sections
-    .find((section) => section.title === "Template")
-    ?.contents.find(
-      (content) =>
-        typeof content === "object" &&
-        content.imageUrl &&
-        (
-          /^https:\/\/.*\.(png|jpe?g(_large)?|gif|webp|svg)$/.test(content.imageUrl) ||
-          content.imageUrl.startsWith("https://i.kym-cdn.com/photos")
-        )
-    )?.imageUrl ?? ""
+  const templateImageUrl =
+    data?.sections
+      .find((section) => section.title === "Template")
+      ?.contents.find(
+        (content) =>
+          typeof content === "object" &&
+          content.imageUrl &&
+          (/^https:\/\/.*\.(png|jpe?g(_large)?|gif|webp|svg)$/.test(content.imageUrl) ||
+            content.imageUrl.startsWith("https://i.kym-cdn.com/photos")),
+      )?.imageUrl ?? "";
 
   useEffect(() => {
     if (!memeUrl) return;

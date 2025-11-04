@@ -1,35 +1,28 @@
-import { Action, Icon, Toast, getPreferenceValues, openExtensionPreferences, showHUD, showToast, showInFinder } from "@raycast/api";
+import {
+  Action,
+  Icon,
+  Toast,
+  getPreferenceValues,
+  openExtensionPreferences,
+  showHUD,
+  showToast,
+  showInFinder,
+} from "@raycast/api";
 import { MemeDetail } from "./MemeDetail";
 import { SearchResult } from "../types";
 import { useEffect, useState } from "react";
 import { downloadImage, copyImage } from "../utils/image";
 import { getMeme } from "knowyourmeme-js";
 
-export function ActionShowDetails({
-  searchResult
-} : {
-  searchResult: SearchResult
-}) {
-  return (
-    <Action.Push icon={Icon.Sidebar} title="Show Details" target={<MemeDetail searchResult={searchResult} />} />
-  )
+export function ActionShowDetails({ searchResult }: { searchResult: SearchResult }) {
+  return <Action.Push icon={Icon.Sidebar} title="Show Details" target={<MemeDetail searchResult={searchResult} />} />;
 }
 
-export function ActionOpenInBrowser({
-  searchResult
-} : {
-  searchResult: SearchResult
-}) {
-  return (
-    <Action.OpenInBrowser url={searchResult.url} />
-  )
+export function ActionOpenInBrowser({ searchResult }: { searchResult: SearchResult }) {
+  return <Action.OpenInBrowser url={searchResult.url} />;
 }
 
-export function ActionCopyThumbnail({
-  searchResult
-} : {
-  searchResult: SearchResult
-}) {
+export function ActionCopyThumbnail({ searchResult }: { searchResult: SearchResult }) {
   const [data, setData] = useState<string>("");
 
   useEffect(() => {
@@ -49,14 +42,10 @@ export function ActionCopyThumbnail({
         await showHUD("Copied to Clipboard");
       }}
     />
-  )
+  );
 }
 
-export function ActionDownloadThumbnail({
-  searchResult
-} : {
-  searchResult: SearchResult
-}) {
+export function ActionDownloadThumbnail({ searchResult }: { searchResult: SearchResult }) {
   const preferences = getPreferenceValues<Preferences>();
   const downloadPath = preferences.downloadPath;
 
@@ -68,7 +57,7 @@ export function ActionDownloadThumbnail({
       setData(res?.image?.url ?? "");
     })();
   }, []);
-  
+
   return (
     <Action
       title="Download Thumbnail"
@@ -80,17 +69,13 @@ export function ActionDownloadThumbnail({
       }}
       shortcut={{
         macOS: { modifiers: ["shift"], key: "return" },
-        windows: { modifiers: ["shift"], key: "enter" }
+        windows: { modifiers: ["shift"], key: "enter" },
       }}
     />
-  )
+  );
 }
 
-export function ActionCopyTemplateImage({
-  templateImageUrl
-} : {
-  templateImageUrl: string
-}) {
+export function ActionCopyTemplateImage({ templateImageUrl }: { templateImageUrl: string }) {
   return (
     <Action
       title="Copy Template Image"
@@ -100,17 +85,13 @@ export function ActionCopyTemplateImage({
         await showHUD("Copied to Clipboard");
       }}
     />
-  )
+  );
 }
 
-export function ActionDownloadTemplateImage({
-  templateImageUrl
-} : {
-  templateImageUrl: string
-}) {
+export function ActionDownloadTemplateImage({ templateImageUrl }: { templateImageUrl: string }) {
   const preferences = getPreferenceValues<Preferences>();
   const downloadPath = preferences.downloadPath;
-  
+
   return (
     <Action
       title="Download Template Image"
@@ -124,19 +105,15 @@ export function ActionDownloadTemplateImage({
           await showToast({
             style: Toast.Style.Failure,
             title: "This meme has no template image",
-            message: "This meme does not contain a template image"
-          })
+            message: "This meme does not contain a template image",
+          });
         }
       }}
     />
-  )
+  );
 }
 
-export function ActionCopyUrl({
-  searchResult
-} : {
-  searchResult: SearchResult
-}) {
+export function ActionCopyUrl({ searchResult }: { searchResult: SearchResult }) {
   return (
     <Action.CopyToClipboard
       title="Copy URL"
@@ -146,7 +123,7 @@ export function ActionCopyUrl({
         windows: { modifiers: ["ctrl", "shift"], key: "c" },
       }}
     />
-  )
+  );
 }
 
 export function ActionOpenExtensionPreferences() {
@@ -160,5 +137,5 @@ export function ActionOpenExtensionPreferences() {
         windows: { modifiers: ["ctrl", "shift"], key: "," },
       }}
     />
-  )
+  );
 }
