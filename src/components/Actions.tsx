@@ -81,8 +81,16 @@ export function ActionCopyTemplateImage({ templateImageUrl }: { templateImageUrl
       title="Copy Template Image"
       icon={Icon.Clipboard}
       onAction={async () => {
-        await copyImage(templateImageUrl ?? "");
-        await showHUD("Copied to Clipboard");
+        if (templateImageUrl) {
+          await copyImage(templateImageUrl ?? "");
+          await showHUD("Copied to Clipboard");
+        } else {
+          await showToast({
+            style: Toast.Style.Failure,
+            title: "This meme has no template image",
+            message: "This meme does not contain a template image",
+          });
+        }
       }}
     />
   );
