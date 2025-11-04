@@ -6,26 +6,20 @@ import fs from "node:fs/promises";
 import { fileTypeFromBuffer } from "file-type";
 
 export async function downloadImage(url: string, downloadPath?: string) {
-  const dir = downloadPath && downloadPath.trim().length > 0
-    ? downloadPath
-    : path.join(os.homedir(), "Downloads");
-    
-  const response = await axios.get(url, { responseType: 'arraybuffer' });
+  const dir = downloadPath && downloadPath.trim().length > 0 ? downloadPath : path.join(os.homedir(), "Downloads");
+
+  const response = await axios.get(url, { responseType: "arraybuffer" });
   const buffer = Buffer.from(response.data);
-  
+
   const type = await fileTypeFromBuffer(buffer);
-  
+
   const baseName = path.basename(url).split("?")[0];
-  
+
   const hasExtension = path.extname(baseName).length > 0;
-  const finalName = hasExtension
-  ? baseName
-  : type
-  ? `${baseName || "image"}.${type.ext}`
-  : `${baseName || "image"}`;
-    
+  const finalName = hasExtension ? baseName : type ? `${baseName || "image"}.${type.ext}` : `${baseName || "image"}`;
+
   const targetPath = path.join(dir, finalName);
-  
+
   await fs.writeFile(targetPath, buffer);
 
   return targetPath;

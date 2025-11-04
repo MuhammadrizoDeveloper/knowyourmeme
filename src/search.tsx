@@ -1,15 +1,13 @@
-import {
-  ActionPanel,
-  Grid,
-  Icon,
-  Image,
-  List,
-  getPreferenceValues
-} from "@raycast/api";
+import { ActionPanel, Grid, Icon, Image, List, getPreferenceValues } from "@raycast/api";
 import { useState, useEffect } from "react";
 import { search, MemeResult } from "knowyourmeme-js";
 import { SearchResult } from "./types";
-import { ActionCopyUrl, ActionOpenExtensionPreferences, ActionOpenInBrowser, ActionShowDetails } from "./components/Actions";
+import {
+  ActionCopyUrl,
+  ActionOpenExtensionPreferences,
+  ActionOpenInBrowser,
+  ActionShowDetails,
+} from "./components/Actions";
 
 export default function Command() {
   const preferences = getPreferenceValues<Preferences>();

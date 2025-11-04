@@ -1,7 +1,7 @@
 import { Detail, Icon } from "@raycast/api";
 import { MemeDetails } from "knowyourmeme-js";
 
-export function MemeDetailMetadata({ meme } : { meme: MemeDetails }) {
+export function MemeDetailMetadata({ meme }: { meme: MemeDetails }) {
   return (
     <Detail.Metadata>
       <Detail.Metadata.Label icon={Icon.Eye} title="Views" text={meme.views?.toLocaleString() || "No Data"} />
