@@ -1,9 +1,9 @@
 import { Detail, ActionPanel } from "@raycast/api";
 import { MemeDetails, getMeme } from "knowyourmeme-js";
-import { useState, useEffect } from "react";
 import { SearchResult } from "../types";
-import { escapeHtmlAttr } from "../utils/helpers";
+import { escapeHtmlAttr, isValidImageUrl } from "../utils/helpers";
 import { MemeDetailMetadata } from "./MemeDetailMetadata";
+import { useCachedPromise } from "@raycast/utils";
 import {
   ActionCopyTemplateImage,
   ActionCopyThumbnail,
@@ -16,29 +16,23 @@ import {
 
 export function MemeDetail({ searchResult }: { searchResult: SearchResult }) {
   const memeUrl = searchResult.url;
-  const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState<MemeDetails | null>(null);
+
+  const { data, isLoading } = useCachedPromise(
+    async (url: string) => {
+      const result: MemeDetails | null = await getMeme(url);
+      return result;
+    },
+    [memeUrl],
+    {
+      execute: Boolean(memeUrl),
+      keepPreviousData: false,
+    },
+  );
 
   const templateImageUrl =
     data?.sections
       .find((section) => section.title === "Template")
-      ?.contents.find(
-        (content) =>
-          typeof content === "object" &&
-          content.imageUrl &&
-          (/^https:\/\/.*\.(png|jpe?g(_large)?|gif|webp|svg)$/.test(content.imageUrl) ||
-            content.imageUrl.startsWith("https://i.kym-cdn.com/photos")),
-      )?.imageUrl ?? "";
-
-  useEffect(() => {
-    if (!memeUrl) return;
-    setIsLoading(true);
-    (async () => {
-      const result: MemeDetails | null = await getMeme(memeUrl);
-      setData(result);
-      setIsLoading(false);
-    })();
-  }, [memeUrl]);
+      ?.contents.find((content) => isValidImageUrl(content.imageUrl))?.imageUrl ?? "";
 
   return (
     <Detail
@@ -74,9 +68,7 @@ ${section.contents
     (content) =>
       `${
         typeof content === "object" && content !== null
-          ? typeof content.imageUrl === "string" &&
-            (/^https:\/\/.*\.(png|jpe?g(_large)?|gif|webp|svg)$/.test(content.imageUrl) ||
-              content.imageUrl.startsWith("https://i.kym-cdn.com/photos"))
+          ? isValidImageUrl(content.imageUrl)
             ? `<img src="${content.imageUrl}" alt="${escapeHtmlAttr(content.imageAlt)}" />
 
 ***

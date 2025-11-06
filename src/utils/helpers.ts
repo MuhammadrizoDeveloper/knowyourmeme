@@ -6,3 +6,10 @@ export function escapeHtmlAttr(value: string) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 }
+
+export function isValidImageUrl(url: string): boolean {
+  return (
+    typeof url === "string" &&
+    (/^https:\/\/.*\.(png|jpe?g(_large)?|gif|webp|svg)$/.test(url) || url.startsWith("https://i.kym-cdn.com/photos"))
+  );
+}

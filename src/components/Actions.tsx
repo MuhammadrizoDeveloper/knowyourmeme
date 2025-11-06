@@ -14,6 +14,18 @@ import { useEffect, useState } from "react";
 import { downloadImage, copyImage } from "../utils/image";
 import { getMeme } from "knowyourmeme-js";
 
+function useMemeThumbnail(url: string) {
+  const [data, setData] = useState<string>("");
+  useEffect(() => {
+    if (!url) return;
+    (async () => {
+      const res = await getMeme(url);
+      setData(res?.image?.url ?? "");
+    })();
+  }, [url]);
+  return data;
+}
+
 export function ActionShowDetails({ searchResult }: { searchResult: SearchResult }) {
   return <Action.Push icon={Icon.Sidebar} title="Show Details" target={<MemeDetail searchResult={searchResult} />} />;
 }
@@ -23,15 +35,7 @@ export function ActionOpenInBrowser({ searchResult }: { searchResult: SearchResu
 }
 
 export function ActionCopyThumbnail({ searchResult }: { searchResult: SearchResult }) {
-  const [data, setData] = useState<string>("");
-
-  useEffect(() => {
-    if (!searchResult.url) return;
-    (async () => {
-      const res = await getMeme(searchResult.url);
-      setData(res?.image?.url ?? "");
-    })();
-  }, []);
+  const data = useMemeThumbnail(searchResult.url);
 
   return (
     <Action
@@ -49,14 +53,7 @@ export function ActionDownloadThumbnail({ searchResult }: { searchResult: Search
   const preferences = getPreferenceValues<Preferences>();
   const downloadPath = preferences.downloadPath;
 
-  const [data, setData] = useState<string>("");
-
-  useEffect(() => {
-    (async () => {
-      const res = await getMeme(searchResult.url);
-      setData(res?.image?.url ?? "");
-    })();
-  }, []);
+  const data = useMemeThumbnail(searchResult.url);
 
   return (
     <Action
