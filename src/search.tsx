@@ -23,7 +23,7 @@ function escapeHtmlAttr(value: string) {
 }
 
 export default function Command() {
-  const preferences = getPreferenceValues();
+  const preferences = getPreferenceValues<Preferences>();
   const isGridView = preferences.viewType === "grid";
   const maxResults = preferences.maxResults;
 
@@ -39,7 +39,7 @@ export default function Command() {
       setData(results);
       setIsLoading(false);
     })();
-  }, [searchText, Number(maxResults)]);
+  }, [searchText, maxResults]);
 
   if (isGridView) {
     return (
@@ -50,7 +50,7 @@ export default function Command() {
           <Grid.Section title="Results" subtitle={data?.length + ""}>
             {data?.map((meme) => (
               <SearchGridItem
-                key={meme.title}
+                key={meme.link}
                 searchResult={{
                   name: meme.title,
                   url: meme.link,
@@ -78,7 +78,7 @@ export default function Command() {
           <List.Section title="Results" subtitle={data?.length + ""}>
             {data?.map((meme) => (
               <SearchListItem
-                key={meme.title}
+                key={meme.link}
                 searchResult={{
                   name: meme.title,
                   url: meme.link,
